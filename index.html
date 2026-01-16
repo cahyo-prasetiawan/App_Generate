@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APP Generate Image</title>
+    <title>AssetForge - Ultra HD Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         
         body {
-            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #020617;
             color: #f8fafc;
             overflow-x: hidden;
@@ -43,15 +43,13 @@
             overflow: hidden;
             border-radius: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
             background: #0f172a;
-            /* Chessboard pattern for transparency preview */
+            /* Chessboard pattern */
             background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
                               linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
                               linear-gradient(45deg, transparent 75%, #1e293b 75%), 
                               linear-gradient(-45deg, transparent 75%, #1e293b 75%);
             background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
         .image-overlay {
@@ -62,26 +60,17 @@
             align-items: flex-end;
             justify-content: center;
             padding-bottom: 1.5rem;
-            opacity: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        @media (min-width: 768px) {
-            .image-overlay { opacity: 0; transition: opacity 0.3s ease; }
-            .image-card:hover .image-overlay { opacity: 1; }
-        }
+        .image-card:hover .image-overlay { opacity: 1; }
 
-        .quality-badge {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Toggle styling */
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 26px;
+            width: 46px;
+            height: 24px;
         }
 
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -93,21 +82,20 @@
             background-color: #1e293b;
             transition: .4s;
             border-radius: 34px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .slider:before {
             position: absolute;
             content: "";
             height: 18px; width: 18px;
-            left: 4px; bottom: 3px;
+            left: 3px; bottom: 3px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
 
         input:checked + .slider { background-color: #3b82f6; }
-        input:checked + .slider:before { transform: translateX(24px); }
+        input:checked + .slider:before { transform: translateX(22px); }
     </style>
 </head>
 <body class="min-h-screen">
@@ -122,54 +110,47 @@
                     <p class="text-[10px] text-blue-400 font-black uppercase tracking-widest">Ultra HD Studio v5.0</p>
                 </div>
             </div>
-            <div class="hidden md:flex items-center space-x-2 quality-badge px-3 py-1 rounded-full">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-[10px] font-bold text-white uppercase tracking-tighter">HD Engine Active</span>
+            <div class="flex items-center space-x-4">
+                <input type="password" id="api-key" placeholder="Enter API Key" class="bg-slate-900 border border-white/10 rounded-lg px-3 py-1 text-xs focus:outline-none focus:border-blue-500 w-32 md:w-48">
+                <div class="hidden md:flex items-center space-x-2 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-[10px] font-bold text-white uppercase">HD Engine Ready</span>
+                </div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-6 mt-10 pb-20">
         <div class="grid lg:grid-cols-12 gap-10">
-            
-            <!-- Sidebar Konfigurasi -->
             <div class="lg:col-span-4 space-y-6">
-                <div class="glass-premium p-6 rounded-3xl space-y-8 lg:sticky lg:top-28 border-white/10">
+                <div class="glass-premium p-6 rounded-3xl space-y-8 lg:sticky lg:top-28">
                     <div class="flex items-center justify-between">
                         <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400">Parameter Studio</h2>
                         <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-black">PRO</span>
                     </div>
 
-                    <!-- Prompt Input -->
                     <div class="space-y-3">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Deskripsi Objek</label>
-                        <textarea id="prompt-input" rows="5" 
+                        <label class="text-xs font-bold text-slate-500 uppercase">Deskripsi Objek</label>
+                        <textarea id="prompt-input" rows="4" 
                             class="w-full bg-slate-900/80 border border-white/10 rounded-2xl p-4 text-sm text-white focus:ring-2 focus:ring-blue-500/50 focus:outline-none transition-all placeholder:text-slate-600"
-                            placeholder="Contoh: Seekor kucing astronot di bulan, detail bulu tajam, pencahayaan dramatis..."></textarea>
+                            placeholder="Contoh: Seekor kucing astronot di bulan..."></textarea>
                     </div>
 
-                    <!-- Pilihan Gaya (Optimized for HD) -->
                     <div class="space-y-3">
-                        <label class="text-xs font-bold text-slate-500 uppercase">Preset Kualitas Tinggi</label>
-                        <select id="style-select" class="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none cursor-pointer hover:bg-slate-800 transition-colors">
-                            <option value="ultra realistic, 8k resolution, cinematic lighting, sharp focus, masterwork, highly detailed texture, raw photo, f/1.8">Cinematic Ultra HD (8K)</option>
-                            <option value="studio portrait photography, highly detailed skin texture, professional lighting, 8k, sharp eyes, bokeh background">High-End Portrait HD</option>
-                            <option value="3d render, octane render, unreal engine 5, masterpiece, volumetric lighting, raytracing, high fidelity, 4k">Premium 3D Concept</option>
-                            <option value="macro photography, extreme detail, 8k, sharp focus, natural textures, detailed surfaces">Macro Precision Detail</option>
-                            <option value="professional flat vector, high contrast, clean minimalist, sharp edges, 4k graphic design, crisp lines">Professional Vector Art</option>
-                            <option value="anime masterpiece, 4k resolution, vibrant colors, clean lineart, studio ghibli style, high fidelity">Ultra Anime 4K</option>
-                            <option value="digital painting, hyper-detailed, masterpiece, colorful, smooth brushwork, high resolution, intricate detail">Fine Art Digital</option>
-                            <option value="luxury product photography, studio lighting, sharp details, commercial grade, 8k, clean background">Product Photography HD</option>
-                            <option value="cyberpunk aesthetic, neon lighting, futuristic city, cinematic bokeh, 8k, highly detailed, sharp">Cyberpunk Neon HD</option>
-                            <option value="architectural photography, interior design, high resolution, professional lighting, sharp lines">Modern Architecture HD</option>
+                        <label class="text-xs font-bold text-slate-500 uppercase">Style Preset</label>
+                        <select id="style-select" class="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="ultra realistic, 8k resolution, cinematic lighting, masterpiece">Cinematic Ultra HD (8K)</option>
+                            <option value="studio portrait photography, highly detailed skin, professional lighting">High-End Portrait HD</option>
+                            <option value="3d render, unreal engine 5, volumetric lighting, raytracing">Premium 3D Concept</option>
+                            <option value="professional flat vector, minimalist, sharp edges, 4k">Professional Vector Art</option>
+                            <option value="anime masterpiece, vibrant colors, studio ghibli style">Ultra Anime 4K</option>
                         </select>
                     </div>
 
-                    <!-- Fitur Transparansi -->
                     <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
                         <div class="flex flex-col">
-                            <span class="text-xs font-bold text-white uppercase">Background Transparan</span>
-                            <span class="text-[10px] text-slate-500">Tanpa latar belakang (PNG style)</span>
+                            <span class="text-xs font-bold text-white uppercase">Transparansi</span>
+                            <span class="text-[10px] text-slate-500">Auto Green-Screen Removal</span>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="transparent-toggle">
@@ -177,64 +158,48 @@
                         </label>
                     </div>
 
-                    <button id="generate-btn" class="btn-gold w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center space-x-3 touch-manipulation">
+                    <button id="generate-btn" class="btn-gold w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center space-x-3">
                         <i id="gen-icon" class="fas fa-magic"></i>
                         <span id="gen-text">Generate Ultra HD</span>
                     </button>
-                    
-                    <p class="text-[9px] text-center text-slate-600 font-medium italic">
-                        *Aplikasi ini menggunakan engine AI tingkat tinggi untuk hasil maksimal.
-                    </p>
                 </div>
             </div>
 
-            <!-- Area Hasil -->
             <div class="lg:col-span-8 space-y-6">
-                <!-- Loading State -->
                 <div id="loading-overlay" class="hidden glass-premium rounded-[2.5rem] p-10 flex flex-col items-center justify-center min-h-[500px]">
-                    <div class="relative w-24 h-24 mb-10">
+                    <div class="relative w-20 h-20 mb-8">
                         <div class="absolute inset-0 border-t-4 border-blue-500 rounded-full animate-spin"></div>
-                        <div class="absolute inset-4 border-b-4 border-pink-500 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                        <div class="absolute inset-3 border-b-4 border-pink-500 rounded-full animate-spin" style="animation-direction: reverse;"></div>
                     </div>
-                    <div class="text-center space-y-4">
-                        <h2 class="text-2xl font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-500">Processing HD</h2>
-                        <p class="text-xs text-slate-400 font-bold uppercase tracking-widest animate-pulse">Menghaluskan Pixel & Menghapus Background...</p>
-                    </div>
+                    <h2 class="text-xl font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-500">Processing HD</h2>
                 </div>
 
-                <!-- Empty State -->
                 <div id="empty-state" class="glass-premium rounded-[2.5rem] p-10 flex flex-col items-center justify-center min-h-[500px]">
-                    <div class="w-32 h-32 bg-slate-800/20 rounded-full flex items-center justify-center mb-8">
-                        <i class="fas fa-wand-sparkles text-slate-700 text-5xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-500 uppercase tracking-widest">Studio HD Siap</h3>
-                    <p class="text-sm text-slate-600 mt-2">Masukkan instruksi Anda di panel samping</p>
+                    <i class="fas fa-wand-sparkles text-slate-800 text-6xl mb-6"></i>
+                    <h3 class="text-xl font-bold text-slate-500 uppercase tracking-widest">Studio HD Siap</h3>
+                    <p class="text-sm text-slate-600 mt-2 text-center">Engine Imagen 4.0 siap memproses prompt Anda</p>
                 </div>
 
-                <!-- Result Grid -->
                 <div id="result-grid" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
 
-                <!-- Footer Actions -->
                 <div id="global-actions" class="hidden flex justify-between items-center">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase italic">Hasil render 2048px (Ultra HD Optimized)</p>
-                    <button id="reset-btn" class="px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-xl transition-all flex items-center space-x-2">
-                        <i class="fas fa-trash-alt"></i><span>HAPUS SEMUA</span>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase">Render: 2048px Optimized</p>
+                    <button id="reset-btn" class="px-5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg transition-all">
+                        HAPUS SEMUA
                     </button>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-premium px-8 py-4 rounded-2xl translate-y-32 opacity-0 transition-all duration-500 z-[100] border-l-4 border-blue-500">
         <p id="toast-msg" class="text-xs font-bold uppercase tracking-widest text-slate-200"></p>
     </div>
 
     <script>
-        const apiKey = ""; 
         const idEl = id => document.getElementById(id);
-        
         const ui = {
+            apiKey: idEl('api-key'),
             prompt: idEl('prompt-input'),
             style: idEl('style-select'),
             transToggle: idEl('transparent-toggle'),
@@ -250,31 +215,32 @@
         let controller = null;
 
         ui.genBtn.onclick = async () => {
+            const key = ui.apiKey.value.trim();
             const promptValue = ui.prompt.value.trim();
-            if (!promptValue) return showToast("MOHON ISI DESKRIPSI GAMBAR!", "error");
+
+            if (!key) return showToast("API KEY HARUS DIISI!", "error");
+            if (!promptValue) return showToast("MASUKKAN DESKRIPSI GAMBAR!", "error");
 
             if (controller) controller.abort();
             controller = new AbortController();
 
             toggleLoading(true);
+            ui.resultGrid.innerHTML = '';
             
             try {
                 const styleMod = ui.style.value;
                 const isTransparent = ui.transToggle.checked;
                 
-                // Prompt Engineering untuk Full HD & Transparansi
-                let finalPrompt = `${promptValue}. ${styleMod}. Extremely detailed, professional quality, high resolution.`;
-                
+                // Prompt engineering
+                let finalPrompt = `${promptValue}, ${styleMod}, extremely detailed, high quality, 4k resolution`;
                 if (isTransparent) {
-                    finalPrompt += " Isolated on a solid plain bright neon green background for easy background removal, high contrast edges, no shadows on background, studio lighting.";
+                    finalPrompt += ", isolated on solid bright neon green background, high contrast, studio lighting";
                 }
 
-                // Melakukan 4 variasi sekaligus untuk Batch Generation
+                // Generate batch (2 gambar untuk efisiensi quota)
                 const tasks = [
-                    generateImage(finalPrompt + " --v1", isTransparent),
-                    generateImage(finalPrompt + " --v2", isTransparent),
-                    generateImage(finalPrompt + " --v3", isTransparent),
-                    generateImage(finalPrompt + " --v4", isTransparent)
+                    generateImage(finalPrompt, isTransparent, key),
+                    generateImage(finalPrompt + " alternative perspective", isTransparent, key)
                 ];
 
                 const results = await Promise.all(tasks);
@@ -282,43 +248,47 @@
 
                 if (validImages.length > 0) {
                     renderGrid(validImages);
-                    showToast("GENERASI ULTRA HD SELESAI", "success");
+                    showToast("GENERASI BERHASIL", "success");
                 } else {
-                    throw new Error("Failed");
+                    throw new Error("Empty Response");
                 }
             } catch (err) {
-                if (err.name !== 'AbortError') showToast("KONEKSI ENGINE TERPUTUS", "error");
+                if (err.name !== 'AbortError') {
+                    console.error(err);
+                    showToast("GAGAL MENGHUBUNGI ENGINE", "error");
+                }
             } finally {
                 toggleLoading(false);
             }
         };
 
-        async function generateImage(prompt, removeBg) {
+        async function generateImage(prompt, removeBg, key) {
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-                const body = { 
-                    instances: { prompt: prompt }, 
-                    parameters: { sampleCount: 1 } 
-                };
-
-                const res = await fetch(url, { 
-                    method: 'POST', 
-                    signal: controller.signal, 
-                    body: JSON.stringify(body) 
-                });
+                // Gunakan URL endpoint Imagen yang benar (Google AI Studio)
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${key}`;
                 
-                const data = await res.json();
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
+                    body: JSON.stringify({
+                        instances: [{ prompt: prompt }],
+                        parameters: { sampleCount: 1 }
+                    })
+                });
+
+                const data = await response.json();
                 const base64 = data.predictions?.[0]?.bytesBase64Encoded;
                 
                 if (!base64) return null;
                 const dataUrl = `data:image/png;base64,${base64}`;
 
-                // Jika fitur transparansi aktif, lakukan pemrosesan background removal di sisi klien (Chroma Keying)
                 return removeBg ? await processTransparency(dataUrl) : dataUrl;
-            } catch (e) { return null; }
+            } catch (e) {
+                return null;
+            }
         }
 
-        // Fitur Pembersihan Background Profesional (Chroma Key Removal)
         function processTransparency(dataUrl) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -332,15 +302,11 @@
                     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     const pixels = imgData.data;
 
-                    // Deteksi warna dominan di pojok (asumsi background) atau warna hijau neon dari prompt
                     for (let i = 0; i < pixels.length; i += 4) {
-                        const r = pixels[i];
-                        const g = pixels[i+1];
-                        const b = pixels[i+2];
-
-                        // Algoritma Removal: Menghapus warna yang mendekati hijau neon/terang yang kita minta di prompt
-                        if (g > 150 && g > r * 1.2 && g > b * 1.2) {
-                            pixels[i+3] = 0; // Set Alpha ke 0 (Transparan)
+                        const r = pixels[i], g = pixels[i+1], b = pixels[i+2];
+                        // Deteksi warna hijau neon (Green Screen)
+                        if (g > 140 && g > r * 1.3 && g > b * 1.3) {
+                            pixels[i+3] = 0; 
                         }
                     }
 
@@ -359,8 +325,8 @@
                 card.innerHTML = `
                     <img src="${src}" class="w-full h-full object-contain">
                     <div class="image-overlay">
-                        <button onclick="saveImage('${src}', ${idx})" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase flex items-center space-x-3 transition-all active:scale-90 shadow-2xl">
-                            <i class="fas fa-download"></i><span>Simpan Ultra HD</span>
+                        <button onclick="saveImage('${src}', ${idx})" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase flex items-center space-x-2 transition-transform active:scale-95 shadow-xl">
+                            <i class="fas fa-download"></i><span>Download HD</span>
                         </button>
                     </div>
                 `;
@@ -374,11 +340,8 @@
         window.saveImage = (url, i) => {
             const a = document.createElement('a');
             a.href = url;
-            a.download = `AssetForge_HD_${Date.now()}_${i}.png`;
-            document.body.appendChild(a);
+            a.download = `AssetForge_${Date.now()}.png`;
             a.click();
-            document.body.removeChild(a);
-            showToast("GAMBAR TERSIMPAN KE GALERI", "success");
         };
 
         function toggleLoading(active) {
@@ -389,7 +352,7 @@
                 ui.globalActions.classList.add('hidden');
             }
             ui.genBtn.disabled = active;
-            ui.genText.innerText = active ? "Processing HD..." : "Generate Ultra HD";
+            ui.genText.innerText = active ? "Processing..." : "Generate Ultra HD";
         }
 
         function showToast(msg, type) {
@@ -397,7 +360,7 @@
             idEl('toast-msg').innerText = msg;
             t.style.borderLeftColor = type === 'success' ? '#10b981' : '#f43f5e';
             t.classList.remove('translate-y-32', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 4000);
+            setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
         }
 
         ui.resetBtn.onclick = () => {
